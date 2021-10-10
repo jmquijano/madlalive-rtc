@@ -4,9 +4,28 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import {
+  ApolloProvider,
+  ApolloClient,
+  createHttpLink,
+  InMemoryCache
+} from '@apollo/client';
+
+export const BACKEND_ENDPOINT = createHttpLink({
+  uri: 'http://localhost:4000/graphql'
+});
+
+export const client = new ApolloClient({
+  link: BACKEND_ENDPOINT,
+  cache: new InMemoryCache()
+})
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
+    
   </React.StrictMode>,
   document.getElementById('root')
 );
