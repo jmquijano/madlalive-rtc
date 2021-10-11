@@ -6,7 +6,13 @@ module.exports = (sequelize, DataTypes) => {
     class Chat extends Model {
         static associate(models) {
             // define association here
+            this.belongsTo(models.MeetingPeer, {
+                foreignKey: 'peer'
+            });
 
+            this.belongsTo(models.Meeting, {
+                foreignKey: 'meeting'
+            });
         }
     }
 
