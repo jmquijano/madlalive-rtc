@@ -21,4 +21,4 @@ TABLESPACE pg_default;
 ALTER TABLE IF EXISTS public.tbl_meeting_chat
     OWNER to postgres;
 
-GRANT ALL ON TABLE public.tbl_meeting_chat TO madla_dev WITH GRANT OPTION;
+GRANT ALL ON TABLE public.tbl_meeting_chat TO postgres WITH GRANT OPTION;
