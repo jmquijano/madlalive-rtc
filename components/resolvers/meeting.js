@@ -157,8 +157,6 @@ module.exports = {
                 throw new AuthenticationError('You are not logged in.');
             }
 
-            
-            
             const createMeeting = await Meeting.create({
                 agoraHostMeetingId: '{AGORA_HOST_ID}',
                 agoraParticipantMeetingId: '{AGORA_PARTICIPANT_ID}',
