@@ -31,10 +31,18 @@ module.exports = (sequelize, DataTypes) => {
       }
 
     },
-    password: DataTypes.STRING,
-    firstName: DataTypes.STRING,
-    middleName: DataTypes.STRING,
-    lastName: DataTypes.STRING,
+    password: {
+      type: DataTypes.STRING
+    },
+    firstName: {
+      type: DataTypes.STRING
+    },
+    middleName: {
+      type: DataTypes.STRING
+    },
+    lastName: {
+      type: DataTypes.STRING
+    },
     email: {
       type: DataTypes.STRING(120),
       unique: {

@@ -3,12 +3,20 @@ const resolvers = require('./components/resolvers/main');
 const express = require('express');
 const cors = require('cors');
 const { ApolloServer, gql } = require('apollo-server-express');
+
+const { makeExecutableSchema } = require('@graphql-tools/schema');
+const { DateTimeResolver, DateTimeTypeDefinition } = require("graphql-scalars");
+
+
 const { Server } = require('socket.io');
 const { AuthenticationGatekeeper } = require('./components/helpers/gatekeeper');
+
+
 
 const port = 4000;
 
 const app = express();
+
 
 // CORS Options
 const corsOptions = {
@@ -20,7 +28,7 @@ app.use(express.json());
 app.use(cors(corsOptions));
 
 async function startServer() {
-    const server = new ApolloServer({ 
+    const server = new ApolloServer({
         typeDefs: typedefs, 
         resolvers: resolvers,
         context: async ({req}) => {
