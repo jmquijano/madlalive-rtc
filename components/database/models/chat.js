@@ -39,6 +39,19 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         message: {
+            /**
+             * Sample Storage Format (JSON)
+             * {
+             *  "body": <notNull|mustBeEmptyString : str : message>,
+             *  "replyTo": <nullable : int : Chat.id> // for future development,
+             *  "attachments": [
+             *      {
+             *          "id": <notNull : int : ChatAttachments.id> 
+             *      },
+             *      ...
+             *  ] // for future development
+             * }
+             */
             type: DataTypes.JSON
         },
         createdAt: {
