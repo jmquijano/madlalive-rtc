@@ -3,6 +3,7 @@ const { Users } = require('../database/models');
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const { Mutation } = require('./meeting');
 
 
 
@@ -101,5 +102,59 @@ module.exports = {
 
         } 
 
+    },
+    Mutation:{
+        Register: async (parent, {firstName, middleName, lastName, username, email, password}) => {
+            let status = false;
+            let message = "";
+            let token = "";
+            
+            try {
+                // Check Username
+                let existingUsername = await Users.findOne({
+                    where: {
+                        username: username
+                    }
+                })
+                 // Check Email
+                let existingEmail = await Users.findOne({
+                    where: {
+                        email: email
+                    }
+                })
+
+
+                // If user/email alraedy exists
+                if(existingUsername){
+                    message='Username already exists'
+                    throw new UserInputError(message);
+                } 
+                if(existingEmail){
+                    message='Email already exists'
+                    throw new UserInputError(message);
+                } 
+
+                const hashedPassword=await bcrypt.hash(password,12)
+                const user = await Users.create({firstName, middleName, lastName, username, email, password:hashedPassword });
+                const tokenPayload = {
+                     id: user.id,
+                     username:user.username,
+                     displayName:user.firstName + (isBlank(user.middleName) ? '' : '' + user.middleName) + (isBlank(user.lastName) ? '' : ' ' + user.lastName) 
+                };
+                status = true;
+                message = "Registration was successful.";
+                token = createJWT(tokenPayload, "3h");
+                
+            } catch (e) {
+                // Server Error
+                throw new UserInputError(message);
+            }
+
+            return {
+                status: status,
+                message: message,
+                token: token
+            };
+        },
     }
 }

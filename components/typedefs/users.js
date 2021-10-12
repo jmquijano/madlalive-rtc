@@ -22,5 +22,9 @@ module.exports = gql`
         Authenticate(username: String!, password: String!): Authenticate!
         GetMyProfile: UserProfileSchema!
     }
+
+    extend type Mutation {
+        Register(firstName:String!, middleName:String!, lastName:String!, username:String!, email:String!, password:String!):Authenticate!
+    }
     
 `;
