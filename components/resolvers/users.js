@@ -5,6 +5,15 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { Mutation } = require('./meeting');
 
+const { PubSub } = require("graphql-subscriptions");
+
+const pubsub = new PubSub();
+
+function getAllUsers(users){
+    pubsub.publish('GET_ALL_USERS' , { users })
+    // setTimeout(getAllUsers(users), 5000);
+}
+
 
 
 function isBlank(str) {
@@ -20,6 +29,20 @@ function createJWT(payload, expire = "3h") {
 
 module.exports = {
     Query: {
+        users:async (parent, args, {auth}) => {
+            // if (!auth.id) {
+            //     throw new AuthenticationError('You are not logged in.');
+            // }
+            try {
+
+              const allUsers= await Users.findAll()
+              getAllUsers(allUsers)
+              return allUsers
+            } catch (error) {
+                throw new UserInputError(error);
+            }
+            
+        },
         Authenticate: async (parent, {username, password}) => {
             let status = false;
             let message = "";
@@ -104,11 +127,12 @@ module.exports = {
 
     },
     Mutation:{
-        Register: async (parent, {firstName, middleName, lastName, username, email, password}) => {
+        Register: async (parent, {firstName, middleName, lastName, username, email, password},{pubsub}) => {
             let status = false;
             let message = "";
             let token = "";
             
+            console.log(pubsub)
             try {
                 // Check Username
                 let existingUsername = await Users.findOne({
@@ -145,6 +169,10 @@ module.exports = {
                 message = "Registration was successful.";
                 token = createJWT(tokenPayload, "3h");
                 
+                const allUsers= await Users.findAll()
+                getAllUsers(allUsers)
+                
+                
             } catch (e) {
                 // Server Error
                 throw new UserInputError(message);
@@ -156,5 +184,10 @@ module.exports = {
                 token: token
             };
         },
-    }
+    },
+    Subscription: {
+        users: {
+            subscribe: () => pubsub.asyncIterator(["GET_ALL_USERS"]),
+        },
+      },
 }

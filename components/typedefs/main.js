@@ -3,6 +3,7 @@ const { typeDefs } = require('graphql-scalars');
 const users = require('./users');
 const token = require('./token');
 const meeting = require('./meeting');
+const chat =require('./chat')
 
 const linkTypedefs = gql`
     type Query {
@@ -14,4 +15,4 @@ const linkTypedefs = gql`
 
 `;
 
-module.exports = [linkTypedefs, typeDefs, users, token, meeting];
+module.exports = [linkTypedefs, typeDefs, users, token, meeting,chat];
