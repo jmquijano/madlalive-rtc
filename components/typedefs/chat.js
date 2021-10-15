@@ -27,10 +27,15 @@ module.exports = gql`
     input MessageInput {
         body:String!
         replyTo: Int
+        attachments:Int
       }
+    type ChatPagination {
+        chat:[Chat]!
+        pageCount:Int!
+    }  
 
     extend type Query {
-        GetChat(meetingId:Int!):[Chat]!
+        GetChat(meetingId:Int!,page:Int!,size:Int!):ChatPagination!
     }
     extend type Mutation {
         CreateChat(peerId:Int!,meetingId:Int!,input:MessageInput):Chat!

@@ -127,7 +127,7 @@ module.exports = {
 
     },
     Mutation:{
-        Register: async (parent, {firstName, middleName, lastName, username, email, password},{pubsub}) => {
+        Register: async (parent, {firstName, middleName, lastName, username, email, password},{}) => {
             let status = false;
             let message = "";
             let token = "";

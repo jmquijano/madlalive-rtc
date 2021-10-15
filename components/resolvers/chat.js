@@ -12,7 +12,7 @@ function getChatMessages(chat){
 
 module.exports = {
     Query: {
-        GetChat: async (parent, {meetingId}, {auth}) => {
+        GetChat: async (parent, {meetingId,page,size}, {auth}) => {
             // if (!auth.id) {
             //     throw new AuthenticationError('You are not logged in.');
             // }
@@ -20,14 +20,20 @@ module.exports = {
             try {
                 // Find Specific chat
                 
-                let findChat = await Chat.findAll({
+                const findChat = await Chat.findAndCountAll({
                     where: {
                         meeting: meetingId
-                    }
+                    },
+                    offset:(page-1)*size,
+                    limit:size,
+                    order:[
+                        ['createdAt','DESC']
+                    ]
                 })
+                const chatCount= await Chat.count({where:{meeting:meetingId}})
                 if (findChat) {
-                    getChatMessages(findChat)
-                    return findChat;
+                    getChatMessages(findChat.rows)
+                    return {chat:findChat.rows,pageCount:Math.ceil(chatCount / size)};
                 } else {
                     
                     
@@ -44,15 +50,22 @@ module.exports = {
             //     throw new AuthenticationError('You are not logged in.');
             // }
 
+            // TO reset when frontend logic is done
+
             try {
                 const chat = await Chat.create({peer:peerId, meeting:meetingId, message:input});
                 
-                const allChat= await Chat.findAll({
+                const allChat= await Chat.findAndCountAll({
                     where:{
                         meeting:meetingId
-                    }
+                    },
+                    offset:0,
+                    limit:3,
+                    order:[
+                        ['createdAt','DESC']
+                    ]
                 })
-                getChatMessages(allChat)
+                getChatMessages(allChat.rows)
                 
                 return chat
             } catch (e) {
