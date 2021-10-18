@@ -73,16 +73,13 @@ export default function Login() {
         });
     }
 
-    
-
-
     return (
         <React.Fragment>
             <PageTitle title={'Login'} />
             <ConfigProvider prefixCls="madla">
                 <Layout className={'login-layout'}>
                     <Content className={'login-content'}>
-                        <Card style={{ width: 400, textAlign: 'center' }}>
+                        <Card style={{ width: 400, textAlign: 'center', borderWidth: '1px' }}>
                             <Space size={10} direction={'vertical'}>
                             <img src={logo} width={'80px'} height={'auto'} />
 
