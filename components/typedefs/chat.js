@@ -21,7 +21,7 @@ module.exports = gql`
     }
 
     type Subscription  {
-        chat(meetingId:Int!): [Chat]!
+        chat(meetingId:Int!): Chat!
     }
 
     input MessageInput {
@@ -31,11 +31,10 @@ module.exports = gql`
       }
     type ChatPagination {
         chat:[Chat]!
-        pageCount:Int!
     }  
 
     extend type Query {
-        GetChat(meetingId:Int!,page:Int!,size:Int!):ChatPagination!
+        GetChat(meetingId:Int!,offset:Int!,size:Int!):[Chat]!
     }
     extend type Mutation {
         CreateChat(peerId:Int!,meetingId:Int!,input:MessageInput):Chat!
