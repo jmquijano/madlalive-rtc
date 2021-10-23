@@ -19,6 +19,7 @@ import Login from './pages/login';
 
 /* Meeting */
 import CreateMeeting from './pages/meeting/create';
+import Chat from './pages/chat_test/chat';
 
 export const GQL_GetTokenInfo = gql`
     query {
@@ -42,6 +43,7 @@ export default function Routes() {
                 <Switch>
                     <AuthenticatedRoute exact component={Home} path="/" />
                     <AuthenticatedRoute exact component={CreateMeeting} path="/meeting/create" />
+                    <AuthenticatedRoute exact component={Chat} path="/chat/:meetingId" />
                     <AuthenticatedRoute exact component={() => {
                         localStorage.removeItem("token");
                         window.location.replace('/');
