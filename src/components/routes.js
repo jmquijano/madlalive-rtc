@@ -21,6 +21,11 @@ import Login from './pages/login';
 import CreateMeeting from './pages/meeting/create';
 import Chat from './pages/chat_test/chat';
 
+/* Charlang Components */
+import MeetingMain from './pages/charlang/meeting';
+import MeetingJoin from './pages/charlang/meetingJoin';
+import MeetingRoom from './pages/charlang/room';
+
 export const GQL_GetTokenInfo = gql`
     query {
         GetTokenInfo {
@@ -42,14 +47,23 @@ export default function Routes() {
             <div>
                 <Switch>
                     <AuthenticatedRoute exact component={Home} path="/" />
+                    {/**
                     <AuthenticatedRoute exact component={CreateMeeting} path="/meeting/create" />
                     <AuthenticatedRoute exact component={Chat} path="/chat/:meetingId" />
+                    */}
                     <AuthenticatedRoute exact component={() => {
                         localStorage.removeItem("token");
                         window.location.replace('/');
                         
                     }} path="/logout" />
                     <PublicRoute exact component={Login} path="/login" />
+
+                    {/**
+                     * This is Charlang
+                     */}
+                    <CharlangRoute exact component={MeetingMain} path="/meeting" />
+                    <CharlangRoute exact component={MeetingJoin} path="/meeting/join/:id" />
+                    <CharlangRoute exact component={MeetingRoom} path="/meeting/room/:id" />
                 </Switch>
             </div>
         </Router>
@@ -89,6 +103,25 @@ function AuthenticatedRoute ({ component: Component, ...rest }) {
             : <div></div>
     )} />
 }
+
+function CharlangRoute ({ component: Component, ...rest }) {
+    const [isAuth, setAuthBool] = React.useState(false);
+    const [isLoading, setLoadingBool] = React.useState(false);
+
+    
+    return <Route {...rest} render={(props) => (
+        !isLoading ?
+            isAuth === true
+            ? <Redirect to={{
+                pathname: '/logout/prompt',
+                state: { from: props.location }
+            }} />
+            : <Component {...props} />
+            : <div></div>
+    )} />
+}
+
+
 
 function PublicRoute ({ component: Component, ...rest }) {
     const [isAuth, setAuthBool] = React.useState(false);

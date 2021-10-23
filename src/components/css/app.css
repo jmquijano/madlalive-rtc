@@ -1,7 +1,9 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
 .madla-layout-content {
     min-height: 280px;
-    padding: 24px;
+    padding: 20px;
     background: #fff;
   }
   .logo {
@@ -57,4 +59,39 @@
 .madla-menu-item-selected::after {
     border-bottom-width: 3px !important;
 }
+
+/* Video Loading */
+.video-loading-active {
+  display: flex;
+}
+
+.video-loading-inactive {
+  display: none;
+}
   
+.video-react .video-react-big-play-button {
+  display: none !important;
+}
+
+.video-react-control-bar {
+  display: none !important;
+}
+
+.video-icon-mic-enable {
+  border: none;
+  outline: none;
+}
+
+.video-icon-mic-disable {
+  background: rgba(78, 78, 78, 0.5);
+  border: none;
+  outline: none;
+}
+
+.video-icon-label-v {
+  visibility: visible;
+}
+
+.video-icon-label-nv {
+  visibility: hidden;
+}
