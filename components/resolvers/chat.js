@@ -12,7 +12,7 @@ function getChatMessages(chat){
 
 module.exports = {
     Query: {
-        GetChat: async (parent, {meetingId,page,size}, {auth}) => {
+        GetChat: async (parent, {meetingId,offset,size}, {auth}) => {
             // if (!auth.id) {
             //     throw new AuthenticationError('You are not logged in.');
             // }
@@ -24,16 +24,16 @@ module.exports = {
                     where: {
                         meeting: meetingId
                     },
-                    offset:(page-1)*size,
+                    offset:offset || 0,
                     limit:size,
                     order:[
                         ['createdAt','DESC']
                     ]
                 })
-                const chatCount= await Chat.count({where:{meeting:meetingId}})
+               
                 if (findChat) {
-                    getChatMessages(findChat.rows)
-                    return {chat:findChat.rows,pageCount:Math.ceil(chatCount / size)};
+                    // getChatMessages(findChat.rows)
+                    return findChat.rows
                 } else {
                     
                     
@@ -65,7 +65,7 @@ module.exports = {
                         ['createdAt','DESC']
                     ]
                 })
-                getChatMessages(allChat.rows)
+                getChatMessages(chat)
                 
                 return chat
             } catch (e) {
