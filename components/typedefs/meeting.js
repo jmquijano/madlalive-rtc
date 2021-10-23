@@ -49,8 +49,9 @@ module.exports = gql`
     
 
     extend type Query {
-        GetAllHostedMeeting : [HostedMeeting]
+        GetAllHostedMeeting: [HostedMeeting]
         GetAllJoinedMeeting: [JoinedMeeting]
+        GetSpecificHostedMeeting (meetingSharedIdentifier: String!): HostedMeeting
     }
 
     extend type Mutation {

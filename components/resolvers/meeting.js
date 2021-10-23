@@ -1,4 +1,4 @@
-const { AuthenticationError, UserInputError, ValidationError } = require('apollo-server-express');
+const { AuthenticationError, UserInputError, ValidationError, ApolloError } = require('apollo-server-express');
 const { Meeting, MeetingPeer, Users } = require('../database/models');
 const dotenv = require('dotenv');
 const crypto = require('crypto');
@@ -53,7 +53,7 @@ module.exports = {
     Query: {
         GetAllHostedMeeting: async (parent, {}, {auth}) => {
             if (!auth?.id) {
-                throw new AuthenticationError("You are not logged in.");
+                throw new AuthenticationError("You are not authenticated.");
             }
 
             try {
@@ -88,12 +88,12 @@ module.exports = {
 
                 return meeting; 
             } catch (e) {
-
+                throw new ApolloError("You haven't created any meeting.", "Meeting.GetAllHostedMeeting.NoMeetingCreated");
             }           
         },
         GetAllJoinedMeeting: async (parent, {}, {auth}) => {
-            if (!auth.id) {
-                throw new AuthenticationError("You are not logged in.");
+            if (!auth?.id) {
+                throw new AuthenticationError("You are not authenticated.");
             }
 
             try {
@@ -149,7 +149,38 @@ module.exports = {
             }
 
             
+        },
+        GetSpecificHostedMeeting: async (parent, {meetingSharedIdentifier}, {auth}) => {
+            if (!auth?.id) {
+                throw new AuthenticationError("You are not authenticated.");
+            }
+
+            const findSpecificHostedMeeting = await Meeting.findOne({
+                where: {
+                    createdBy: auth.id,
+                    meetingSharedIdentifier: meetingSharedIdentifier
+                }
+            });
+
+            // This is an alias to shorten original variable name
+            const d = findSpecificHostedMeeting;
+
+            let o = {
+                meetingSharedIdentifier: d?.meetingSharedIdentifier,
+                agoraHostMeetingId: d?.agoraHostMeetingId,
+                agoraParticipantMeetingId: d?.agoraParticipantMeetingId,
+                meetingName: d?.meetingName,
+                meetingDesc: d?.meetingDesc,
+                meetingPasscode: d?.meetingPasscode,
+                enableWaitingRoom: d?.enableWaitingRoom,
+                meetingLink: process.env.SharedMeetingLinkBase + d?.meetingSharedIdentifier,
+                meetingLinkWithPasscode: process.env.SharedMeetingLinkBase + d?.meetingSharedIdentifier + '?passcode=' + sha256(d?.meetingPasscode),
+                createdAt: d?.createdAt
+            };
+
+            return o;
         }
+
     },
     Mutation: {
         CreateMeeting: async (parent, {meetingName, meetingDesc, enableWaitingRoom}, {auth}) => {
